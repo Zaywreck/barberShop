@@ -21,7 +21,7 @@ const Hours = () => {
         };
         const appointment2 = {
             time: '10:00', // Add time property
-            customerName: 'Sena Nur Gülle',
+            customerName: 'Sena Nur Eren',
             services: [
                 { name: 'Saç', approved: true },
                 { name: 'Sakal', approved: false },
@@ -45,7 +45,7 @@ const Hours = () => {
         };
         const appointment4 = {
             time: '18:00', // Add time property
-            customerName: 'Sena Nur Gülle',
+            customerName: 'Sena Nur Eren',
             services: [
                 { name: 'Saç', approved: true },
                 { name: 'Sakal', approved: false },

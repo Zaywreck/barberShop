@@ -5,7 +5,7 @@ import PickerWidget from '../../components/dates/pickerWidget';
 import Hours from '../../components/dates/hours';
 
 
-const MainScreen = () => {
+const BarberMainScreen = () => {
 
     return (
         <View style={styles.container}>
@@ -15,4 +15,4 @@ const MainScreen = () => {
     );
 };
 
-export default MainScreen;
+export default BarberMainScreen;
