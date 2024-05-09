@@ -37,8 +37,9 @@ const Appointment = () => {
         keyExtractor={(item) => item}
         extraData={selectedServices}
       />
+      <Text style={styles.text} >Lütfen almak istediğiniz hizmet(ler)i seçiniz.</Text>
       <TouchableOpacity style={styles.appointButton} onPress={handleAppoint}>
-        <Text style={styles.buttonText}>Appoint</Text>
+        <Text style={styles.buttonText}>Randevu oluştur</Text>
       </TouchableOpacity>
     </View>
   );
@@ -69,6 +70,13 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  text: {
+    padding: 10,
+    textAlign: 'center',
+    backgroundColor: '#304a78',
+    color: 'gold',
+    marginBottom: 10,
   },
 });
 

@@ -7,8 +7,11 @@ import WelcomeScreen from './src/screens/WelcomeScreen/welcome';
 import MapScreen from './src/components/map/map';
 import LoginScreen from './src/screens/AuthScreens/LoginScreen';
 import RegisterScreen from './src/screens/AuthScreens/RegisterScreen';
+import { initializeApp } from 'firebase/app';
+import firebaseConfig from './firebaseConfig';
 
 const Stack = createNativeStackNavigator();
+const app = initializeApp(firebaseConfig);
 
 export default function App() {
   return (

@@ -1,21 +1,62 @@
-import React from 'react';
-import { View, Text, SafeAreaView, TextInput, TouchableOpacity, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, SafeAreaView, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import styles from './style';
 
 const LoginScreen = () => {
-    const navigation = useNavigation(); // Hook for navigation
+    const navigation = useNavigation();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const auth = getAuth();
+    const db = getFirestore();
 
-    // Function to handle login button press
-    const handleLogin = () => {
-        // Assuming you have authentication logic and role check here
-        const userRole = 'barber'; // Example role
+    // useEffect(() => {
+    //     // Check if user is already logged in
+    //     const unsubscribe = onAuthStateChanged(auth, (user) => {
+    //         if (user) {
+    //             // User is signed in, navigate to appropriate screen
+    //             const userRole = getUserRoleFromFirestore(user.email);
+    //             if (userRole === 'barber') {
+    //                 navigation.replace('BarberMain');
+    //             } else if (userRole === 'customer') {
+    //                 navigation.replace('CustomerMain');
+    //             }
+    //         } else {
+    //             // User is signed out
+    //         }
+    //     });
 
-        // Redirect based on user role
-        if (userRole === 'barber') {
-            navigation.navigate('Barber'); // Navigate to BarberScreen
-        } else if (userRole === 'customer') {
-            navigation.navigate('Customer'); // Navigate to CustomerScreen
+    //     return unsubscribe; // Cleanup function
+    // }, []); // Empty dependency array ensures this effect runs only once on component mount
+
+    const handleLogin = async () => {
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // Get user role from Firestore
+            const userDocRef = doc(db, 'users', email);
+            const userDocSnap = await getDoc(userDocRef);
+
+            if (userDocSnap.exists()) {
+                const userData = userDocSnap.data();
+                const userRole = userData.role; 
+
+                // Redirect based on user role
+                if (userRole === 'barber') {
+                    navigation.navigate('BarberMain');
+                } else if (userRole === 'customer') {
+                    navigation.navigate('CustomerMain');
+                } else {
+                    Alert.alert("Error", "Invalid user role.");
+                }
+            } else {
+                Alert.alert("Error", "User data not found.");
+            }
+        } catch (error) {
+            Alert.alert("Login Error", error.message);
         }
     };
 
@@ -29,11 +70,16 @@ const LoginScreen = () => {
                 <TextInput
                     style={styles.input}
                     placeholder='Email...'
+                    value={email}
+                    keyboardType='email-address'
+                    onChangeText={text => setEmail(text)}
                 />
                 <TextInput
                     style={styles.input}
                     placeholder='Şifre...'
-                    secureTextEntry={true} // Mask the password input
+                    value={password}
+                    onChangeText={text => setPassword(text)}
+                    secureTextEntry={true}
                 />
             </View>
             <View style={styles.buttonContainer}>

@@ -32,19 +32,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: 'green',
+    backgroundColor: 'gold',
   },
   infoPart: {
     flex: 1,
     backgroundColor: 'white',
     justifyContent: 'center',
-    margin: 5,
+    margin: 2,
   },
   hoursPart: {
     flex: 1,
     backgroundColor: 'lightblue',
     justifyContent: 'center',
-    margin: 5,
+    margin: 2,
   },
 });
 

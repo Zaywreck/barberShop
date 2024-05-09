@@ -4,7 +4,7 @@ import React from 'react'
 const ImageWidget = () => {
   return (
     <View style={styles.container}>
-      <Image source={require('../../../images/barberLogo.png')} style={{width: '100%', height: 200}} />
+      <Image source={require('../../../images/barberLogo.png')} style={{width: '100%', height: '100%'}} />
     </View>
   )
 }
