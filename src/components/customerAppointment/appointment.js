@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import services from '../../constants/services';
+import React, { useState, useContext, useEffect } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
+import AppContext from '../../context/AppContext'; // Import your AppContext
+import colors from '../../constants/colors';
 
 const Appointment = () => {
-  const availableServices = Object.keys(services);
+  const { services } = useContext(AppContext);
+  console.log('Services:', services);
+  const availableServices = Object.keys(services).sort((a, b) => a - b);
+  console.log('Available Services:', availableServices);
   const [selectedServices, setSelectedServices] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const toggleService = (service) => {
     const updatedServices = selectedServices.includes(service)
@@ -19,64 +24,83 @@ const Appointment = () => {
       onPress={() => toggleService(item)}
     >
       <Text>{services[item].name}</Text>
-      <Text>Price: ₺{services[item].price}</Text>
+      <Text>Ücret: ₺{services[item].price}</Text>
     </TouchableOpacity>
   );
 
   const handleAppoint = () => {
-    // Handle appointment logic here, such as navigating to appointment screen
     console.log('Selected Services:', selectedServices);
-    // Navigate to the appointment screen or perform other actions
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  }, []);
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={availableServices}
-        renderItem={renderServiceItem}
-        keyExtractor={(item) => item}
-        extraData={selectedServices}
-      />
-      <Text style={styles.text} >Lütfen almak istediğiniz hizmet(ler)i seçiniz.</Text>
-      <TouchableOpacity style={styles.appointButton} onPress={handleAppoint}>
-        <Text style={styles.buttonText}>Randevu oluştur</Text>
-      </TouchableOpacity>
+      {isLoading ? (
+        <ActivityIndicator size="large" color={colors.primary500} style={styles.loadingIndicator} />
+      ) : (
+        <>
+          <FlatList
+            data={availableServices}
+            renderItem={renderServiceItem}
+            keyExtractor={(item) => item}
+            extraData={selectedServices}
+          />
+          <Text style={styles.text}>Lütfen almak istediğiniz hizmet(ler)i seçiniz.</Text>
+          <TouchableOpacity style={styles.appointButton} onPress={handleAppoint}>
+            <Text style={styles.buttonText}>Randevu oluştur</Text>
+          </TouchableOpacity>
+        </>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 2,
-    backgroundColor: 'white',
-    paddingTop: 10,
+    flex: 1,
+    backgroundColor: colors.white,
+    padding: 10,
   },
   serviceItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: colors.black,
   },
   selectedService: {
-    backgroundColor: 'lightblue',
+    backgroundColor: colors.primary100,
   },
   appointButton: {
-    marginBottom: 20,
-    backgroundColor: '#008080',
+    marginTop: 20,
+    backgroundColor: colors.secondary500,
     padding: 15,
     alignItems: 'center',
+    borderRadius: 10,
   },
   buttonText: {
-    color: 'white',
+    color: colors.white,
     fontWeight: 'bold',
+    fontSize: 16,
   },
   text: {
-    padding: 10,
     textAlign: 'center',
-    backgroundColor: '#304a78',
-    color: 'gold',
+    backgroundColor: colors.primary500,
+    color: colors.gold,
+    paddingVertical: 10,
+    borderRadius: 10,
     marginBottom: 10,
+  },
+  loadingIndicator: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

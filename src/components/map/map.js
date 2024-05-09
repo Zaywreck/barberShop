@@ -1,14 +1,16 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Linking, Platform } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import location from '../../constants/location';
 import { MaterialIcons } from '@expo/vector-icons';
+import AppContext from '../../context/AppContext';
 
 const MapScreen = ({ route }) => {
   const { address } = route.params;
-  const { latitude, longitude } = location;
-  const latitudeDelta = 0.015;
-  const longitudeDelta = 0.0121;
+  const { location } = useContext(AppContext); 
+
+  const { latitude, longitude } = location || {};
+  const { latitudeDelta, longitudeDelta } = location || {};  
 
   const mapViewRef = useRef(null);
   const [mapRegion, setMapRegion] = useState({

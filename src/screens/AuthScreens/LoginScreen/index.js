@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 import styles from './style';
+import AppContext, { AppProvider } from '../../../context/AppContext';
 
 const LoginScreen = () => {
+    const context = useContext(AppContext);
     const navigation = useNavigation();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const auth = getAuth();
-    const db = getFirestore();
+    const {auth,firestore} = context;
 
     // useEffect(() => {
     //     // Check if user is already logged in
@@ -37,7 +38,7 @@ const LoginScreen = () => {
             const user = userCredential.user;
 
             // Get user role from Firestore
-            const userDocRef = doc(db, 'users', email);
+            const userDocRef = doc(firestore, 'users', email);
             const userDocSnap = await getDoc(userDocRef);
 
             if (userDocSnap.exists()) {

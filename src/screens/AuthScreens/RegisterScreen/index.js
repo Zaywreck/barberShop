@@ -1,23 +1,25 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, Text, SafeAreaView, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import styles from './style';
+import AppContext from '../../../context/AppContext';
+import { setDoc, doc } from 'firebase/firestore';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 const RegisterScreen = ({ navigation }) => {
+    const context = useContext(AppContext);
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [fullName, setFullName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
-    const auth = getAuth();
-    const db = getFirestore();
+    const { auth, firestore } = context;
 
     const handleRegister = async () => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            await setDoc(doc(db, "users", email), {
+            await setDoc(doc(firestore, "users", email), {
                 fullName: fullName,
                 phoneNumber: phoneNumber,
                 role: "customer"
@@ -32,7 +34,9 @@ const RegisterScreen = ({ navigation }) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.welcomeText}>Register</Text>
+            <Text style={styles.welcomeText}>buraya bi logo kanka!</Text>
+            <Text style={styles.welcomeText}>Randevu işlemini kolaylaştırmak için</Text>
+            <Text style={styles.welcomeText}>Lütfen bilgilerinizi girin.</Text>
             <View style={styles.inputContainer}>
                 <TextInput
                     style={styles.input}
@@ -64,7 +68,7 @@ const RegisterScreen = ({ navigation }) => {
             </View>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-                    <Text style={styles.buttonText}>Register</Text>
+                    <Text style={styles.buttonText}>Kayıt</Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

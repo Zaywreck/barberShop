@@ -1,18 +1,19 @@
 import { StyleSheet } from "react-native";
+import colors from "../../../constants/colors";
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'black',
+        backgroundColor: colors.black,
     },
     inputContainer: {
         width: '80%',
         marginBottom: 20,
     },
     input: {
-        backgroundColor: '#758fd1',
+        backgroundColor: colors.primary200,
         height: 50,
         borderWidth: 1,
         borderRadius: 10,
@@ -22,23 +23,23 @@ const styles = StyleSheet.create({
     buttonContainer: {
         alignItems: 'center',
     },
-    loginButton: {
+    registerButton: {
         width: 100,
         height: 50,
-        backgroundColor: '#005B41',
+        backgroundColor: colors.secondary400,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 10,
     },
     buttonText: {
-        color: 'white',
+        color: colors.white,
         fontSize: 18,
         fontWeight: 'bold',
     },
     welcomeText: {
         fontSize: 24,
         fontWeight: 'bold',
-        color: 'gold',
+        color: colors.secondary500,
         fontStyle: 'italic',
         marginBottom: 20,
     },

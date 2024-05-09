@@ -9,21 +9,26 @@ import LoginScreen from './src/screens/AuthScreens/LoginScreen';
 import RegisterScreen from './src/screens/AuthScreens/RegisterScreen';
 import { initializeApp } from 'firebase/app';
 import firebaseConfig from './firebaseConfig';
+import { AppProvider } from './src/context/AppContext';
+import AdminScreen from './src/screens/AdminScreen';
 
 const Stack = createNativeStackNavigator();
 const app = initializeApp(firebaseConfig);
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
-        <Stack.Screen name="BarberMain" component={BarberMainScreen} />
-        <Stack.Screen name="CustomerMain" component={CustomerMainScreen} />
-        <Stack.Screen name="Map" component={MapScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AppProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Admin">
+          <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="BarberMain" component={BarberMainScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="CustomerMain" component={CustomerMainScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Map" component={MapScreen} />
+          <Stack.Screen name="Admin" component={AdminScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AppProvider>
   );
 }

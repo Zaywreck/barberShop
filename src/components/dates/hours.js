@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet,ScrollView  } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import AppointmentWidget from '../appointments/appointmentWidget';
+import colors from '../../constants/colors';
 
 const Hours = () => {
     const [appointments, setAppointments] = useState([]);
@@ -55,7 +56,7 @@ const Hours = () => {
                 { name: 'Kulak', approved: false },
             ],
         };
-    
+
         // Add example appointments to the state
         setAppointments([appointment1, appointment2, appointment3, appointment4]);
     }, []); // Run only on component mount
@@ -92,7 +93,7 @@ const Hours = () => {
 const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
-        backgroundColor: '#0F0F0F',
+        backgroundColor: colors.black,
     },
     hoursContainer: {
         padding: 10,
@@ -101,17 +102,17 @@ const styles = StyleSheet.create({
     hourRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'flex-start', // Align items to the top
+        alignItems: 'flex-start',
         borderBottomWidth: 1,
-        borderBottomColor: '#005B41',
+        borderBottomColor: colors.secondary500,
         paddingVertical: 10,
     },
     hourText: {
-        color: '#008170',
+        color: colors.primary500,
         fontSize: 16,
     },
     appointmentText: {
-        color: '#008170',
+        color: colors.primary300,
         fontSize: 16,
     },
 });

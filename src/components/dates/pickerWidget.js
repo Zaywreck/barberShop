@@ -1,21 +1,21 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
+import colors from '../../constants/colors';
 
 const PickerWidget = () => {
-  const [selectedIndex, setSelectedIndex] = useState(0); // Track selected index
-  const [selectedDate, setSelectedDate] = useState(new Date()); // Track selected date
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const handleDateChange = (itemValue, itemIndex) => {
-    setSelectedIndex(itemIndex); // Update selected index
-    setSelectedDate(new Date(itemValue)); // Update selected date
-    // Handle date change here
+    setSelectedIndex(itemIndex);
+    setSelectedDate(new Date(itemValue));
   };
 
   return (
     <View style={styles.container}>
       <Picker
-        selectedValue={selectedIndex} // Use selectedIndex instead of selectedDate
+        selectedValue={selectedIndex}
         style={styles.datePicker}
         onValueChange={handleDateChange}>
         {Array.from({ length: 7 }).map((_, index) => {
@@ -29,8 +29,8 @@ const PickerWidget = () => {
                 day: 'numeric',
                 month: 'long',
               })}
-              value={index} // Use index as value
-              color="#008170"
+              value={index}
+              color={colors.primary500}
             />
           );
         })}
@@ -41,14 +41,15 @@ const PickerWidget = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#0F0F0F',
+    backgroundColor: colors.black,
   },
   datePicker: {
     height: 50,
     width: '100%',
-    backgroundColor: '#232D3F',
+    backgroundColor: colors.primary400,
     justifyContent: 'center',
     alignItems: 'center',
+    color: colors.white,
   },
 });
 
