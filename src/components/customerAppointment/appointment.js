@@ -1,13 +1,11 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
-import AppContext from '../../context/AppContext'; // Import your AppContext
+import AppContext from '../../context/AppContext';
 import colors from '../../constants/colors';
 
 const Appointment = () => {
   const { services } = useContext(AppContext);
-  console.log('Services:', services);
   const availableServices = Object.keys(services).sort((a, b) => a - b);
-  console.log('Available Services:', availableServices);
   const [selectedServices, setSelectedServices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -23,8 +21,8 @@ const Appointment = () => {
       style={[styles.serviceItem, selectedServices.includes(item) && styles.selectedService]}
       onPress={() => toggleService(item)}
     >
-      <Text>{services[item].name}</Text>
-      <Text>Ücret: ₺{services[item].price}</Text>
+      <Text style={styles.serviceName}>{services[item].name}</Text>
+      <Text style={styles.servicePrice}>Ücret: ₺{services[item].price}</Text>
     </TouchableOpacity>
   );
 
@@ -50,10 +48,10 @@ const Appointment = () => {
             keyExtractor={(item) => item}
             extraData={selectedServices}
           />
-          <Text style={styles.text}>Lütfen almak istediğiniz hizmet(ler)i seçiniz.</Text>
+          {/* <Text style={styles.instructionText}>Lütfen almak istediğiniz hizmet(ler)i seçiniz.</Text>
           <TouchableOpacity style={styles.appointButton} onPress={handleAppoint}>
             <Text style={styles.buttonText}>Randevu oluştur</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </>
       )}
     </View>
@@ -67,15 +65,25 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   serviceItem: {
+    backgroundColor: colors.primary400,
+    borderRadius: 10,
+    marginBottom: 10,
+    padding: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.black,
   },
   selectedService: {
     backgroundColor: colors.primary100,
+  },
+  serviceName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: colors.black,
+  },
+  servicePrice: {
+    fontSize: 14,
+    color: colors.darkGray,
   },
   appointButton: {
     marginTop: 20,
@@ -89,7 +97,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-  text: {
+  instructionText: {
     textAlign: 'center',
     backgroundColor: colors.primary500,
     color: colors.gold,

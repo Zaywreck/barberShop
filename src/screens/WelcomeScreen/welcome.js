@@ -6,7 +6,7 @@ const WelcomeScreen = () => {
   const navigation = useNavigation();
 
   const handleUserTypeSelection = (type) => {
-    navigation.navigate(type === 'barber' ? 'BarberMain' : 'CustomerMain');
+    navigation.navigate(type === 'barber' ? 'BarberMain' : 'CustomerTab');
   };
 
   return (

@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import BarberMainScreen from './src/screens/BarberMainScreen';
-import CustomerMainScreen from './src/screens/CustomerMainScreen';
+import CustomerTabNavigator from './src/components/customerTabNav/customerTabNavigator';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import WelcomeScreen from './src/screens/WelcomeScreen/welcome';
 import MapScreen from './src/components/map/map';
@@ -19,12 +19,12 @@ export default function App() {
   return (
     <AppProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Admin">
+        <Stack.Navigator initialRouteName="Welcome">
           <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
           <Stack.Screen name="BarberMain" component={BarberMainScreen} options={{ headerShown: false }} />
-          <Stack.Screen name="CustomerMain" component={CustomerMainScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="CustomerTab" component={CustomerTabNavigator} options={{ headerShown: false }} /> 
           <Stack.Screen name="Map" component={MapScreen} />
           <Stack.Screen name="Admin" component={AdminScreen} />
         </Stack.Navigator>

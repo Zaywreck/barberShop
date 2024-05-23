@@ -1,88 +1,72 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import BarberInfo from '../../components/barberInfo/barberInfo';
-import colors from '../../constants/colors';
+import React from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import CalendarComponents from '../../components/calendar/calendar';
 import Appointment from '../../components/customerAppointment/appointment';
-import AdditionalInfo from '../../components/additionalInfo/additionalInfo';
-import Reviews from '../../components/reviews/reviews';
+import styles from './styles';
+
+const hours = [
+    '09:00', '10:00', '11:00',
+    '12:00', '13:00', '14:00',
+    '15:00', '16:00', '17:00',
+    '18:00', '19:00', '20:00'
+];
 
 const CustomerMainScreen = () => {
-    const [activeTab, setActiveTab] = useState('services');
-
-    const renderContent = () => {
-        switch (activeTab) {
-            case 'services':
-                return <Appointment />;
-            case 'additionalInfo':
-                return <AdditionalInfo />;
-            case 'reviews':
-                return <Reviews />;
-            default:
-                return <Appointment />;
-        }
-    };
-
-    return (
-        <View style={styles.container}>
-            <BarberInfo />
-            <View style={styles.appointmentContainer}>
-                <View style={styles.tabBar}>
-                    <TouchableOpacity
-                        style={[styles.tabItem, activeTab === 'services' && styles.activeTab]}
-                        onPress={() => setActiveTab('services')}>
-                        <Text style={styles.tabText}>Services</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={[styles.tabItem, activeTab === 'additionalInfo' && styles.activeTab]}
-                        onPress={() => setActiveTab('additionalInfo')}>
-                        <Text style={styles.tabText}>Additional Info</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={[styles.tabItem, activeTab === 'reviews' && styles.activeTab]}
-                        onPress={() => setActiveTab('reviews')}>
-                        <Text style={styles.tabText}>Reviews</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.content}>{renderContent()}</View>
-            </View>
+    const renderHourItem = ({ item }) => (
+        <View style={styles.hourBox}>
+            <Text style={styles.hourText}>{item}</Text>
         </View>
     );
-};
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.white,
-    },
-    appointmentContainer: {
-        flex: 1,
-        borderTopWidth: 1,
-        borderTopColor: colors.black,
-    },
-    tabBar: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        backgroundColor: colors.primary500,
-        paddingVertical: 10,
-    },
-    tabItem: {
-        flex: 1,
-        alignItems: 'center',
-        paddingVertical: 10,
-    },
-    activeTab: {
-        backgroundColor: colors.primary400,
-    },
-    tabText: {
-        color: colors.gold,
-        fontSize: 16,
-    },
-    content: {
-        flex: 1,
-        paddingHorizontal: 10,
-        paddingTop: 10,
-    },
-});
+    const handleAppoint = () => {
+        console.log('Selected Services:', selectedServices);
+    };
+
+    const renderMainItem = ({ item }) => {
+        if (item.type === 'calendar') {
+            return <CalendarComponents />;
+        } else if (item.type === 'hours') {
+            return (
+                <View>
+                    <Text style={styles.text}>Müsait Saatler</Text>
+                    <FlatList
+                        data={hours}
+                        renderItem={renderHourItem}
+                        keyExtractor={(item) => item}
+                        numColumns={3}
+                        contentContainerStyle={styles.hoursContainer}
+                    />
+                </View>
+            );
+        } else if (item.type === 'appointment') {
+            return (
+                <View>
+                    <Text style={styles.text}>Verilen Hizmetler</Text>
+                    <Appointment />
+                    <Text style={styles.instructionText}>Lütfen almak istediğiniz hizmet(ler)i seçiniz.</Text>
+                    <TouchableOpacity style={styles.appointButton} onPress={handleAppoint}>
+                        <Text style={styles.buttonText}>Randevu oluştur</Text>
+                    </TouchableOpacity>
+                </View>
+            );
+        }
+        return null;
+    };
+
+    const mainData = [
+        { type: 'calendar' },
+        { type: 'hours' },
+        { type: 'appointment' }
+    ];
+
+    return (
+        <FlatList
+            data={mainData}
+            renderItem={renderMainItem}
+            keyExtractor={(item, index) => index.toString()}
+            contentContainerStyle={styles.container}
+        />
+    );
+}
 
 export default CustomerMainScreen;
