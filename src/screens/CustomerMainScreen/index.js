@@ -1,68 +1,48 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, FlatList, TouchableOpacity, TextInput } from 'react-native';
 import CalendarComponents from '../../components/calendar/calendar';
 import Appointment from '../../components/customerAppointment/appointment';
 import styles from './styles';
-
-const hours = [
-    '09:00', '10:00', '11:00',
-    '12:00', '13:00', '14:00',
-    '15:00', '16:00', '17:00',
-    '18:00', '19:00', '20:00'
-];
+import TimeWidget from '../../components/timeWidget/TimeWidget';
 
 const CustomerMainScreen = () => {
-    const renderHourItem = ({ item }) => (
-        <View style={styles.hourBox}>
-            <Text style={styles.hourText}>{item}</Text>
-        </View>
-    );
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedHour, setSelectedHour] = useState(null);
 
-    const handleAppoint = () => {
-        console.log('Selected Services:', selectedServices);
-    };
-
-    const renderMainItem = ({ item }) => {
-        if (item.type === 'calendar') {
-            return <CalendarComponents />;
-        } else if (item.type === 'hours') {
-            return (
-                <View>
-                    <Text style={styles.text}>Müsait Saatler</Text>
-                    <FlatList
-                        data={hours}
-                        renderItem={renderHourItem}
-                        keyExtractor={(item) => item}
-                        numColumns={3}
-                        contentContainerStyle={styles.hoursContainer}
-                    />
-                </View>
-            );
-        } else if (item.type === 'appointment') {
-            return (
-                <View>
-                    <Text style={styles.text}>Verilen Hizmetler</Text>
-                    <Appointment />
-                    <Text style={styles.instructionText}>Lütfen almak istediğiniz hizmet(ler)i seçiniz.</Text>
-                    <TouchableOpacity style={styles.appointButton} onPress={handleAppoint}>
-                        <Text style={styles.buttonText}>Randevu oluştur</Text>
-                    </TouchableOpacity>
-                </View>
-            );
-        }
-        return null;
+    const handleDateChange = (date) => {
+        setSelectedDate(date);
+        console.log("Selected Date:", date.toLocaleDateString());
     };
 
     const mainData = [
         { type: 'calendar' },
-        { type: 'hours' },
+        { type: 'time' },
         { type: 'appointment' }
     ];
 
     return (
         <FlatList
             data={mainData}
-            renderItem={renderMainItem}
+            renderItem={({ item }) => {
+                if (item.type === 'calendar') {
+                    return <CalendarComponents onDateChange={handleDateChange} />;
+                } else if (item.type === 'time') {
+                    return (
+                        <View>
+                            <Text style={styles.text}>Müsait Saatler</Text>
+                            <TimeWidget setSelectedHour={setSelectedHour} selectedDate={selectedDate} />
+                        </View>
+                    );
+                } else if (item.type === 'appointment') {
+                    return (
+                        <View>
+                            <Text style={styles.text}>Verilen Hizmetler</Text>
+                            <Appointment selectedDate={selectedDate} selectedHour={selectedHour} />
+                        </View>
+                    );
+                }
+                return null;
+            }}
             keyExtractor={(item, index) => index.toString()}
             contentContainerStyle={styles.container}
         />

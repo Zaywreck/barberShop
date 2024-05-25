@@ -34,8 +34,7 @@ const LoginScreen = () => {
 
     const handleLogin = async () => {
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
+            await signInWithEmailAndPassword(auth, email, password);
 
             // Get user role from Firestore
             const userDocRef = doc(firestore, 'users', email);
@@ -49,7 +48,7 @@ const LoginScreen = () => {
                 if (userRole === 'barber') {
                     navigation.navigate('BarberMain');
                 } else if (userRole === 'customer') {
-                    navigation.navigate('CustomerMain');
+                    navigation.navigate('CustomerTab');
                 } else {
                     Alert.alert("Error", "Invalid user role.");
                 }

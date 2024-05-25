@@ -1,13 +1,15 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, TextInput } from 'react-native';
 import AppContext from '../../context/AppContext';
 import colors from '../../constants/colors';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
-const Appointment = () => {
-  const { services } = useContext(AppContext);
+const Appointment = ({selectedDate,selectedHour }) => {
+  const { firestore, auth, services } = useContext(AppContext);
   const availableServices = Object.keys(services).sort((a, b) => a - b);
   const [selectedServices, setSelectedServices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [note, setNote] = useState('');
 
   const toggleService = (service) => {
     const updatedServices = selectedServices.includes(service)
@@ -25,9 +27,33 @@ const Appointment = () => {
       <Text style={styles.servicePrice}>Ücret: ₺{services[item].price}</Text>
     </TouchableOpacity>
   );
+  const handleAppoint = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error('Kullanıcı kimliği doğrulanmadı');
 
-  const handleAppoint = () => {
-    console.log('Selected Services:', selectedServices);
+      const userDocRef = doc(firestore, 'users', user.email);
+      const userDoc = await getDoc(userDocRef);
+      if (!userDoc.exists()) throw new Error('Kullanıcı belgesi bulunamadı');
+
+      const fullName = userDoc.data().fullName;
+      const date = selectedDate.toISOString().split('T')[0]; // Format date as YYYY-MM-DD
+
+      const appointmentData = {
+        fullName,
+        services: selectedServices,
+        date,
+        hour: selectedHour,
+        note
+      };
+
+      const appointmentRef = doc(firestore, 'appointments', date, 'appointments', user.uid);
+      await setDoc(appointmentRef, appointmentData);
+      alert('Randevu başarıyla oluşturuldu!');
+    } catch (error) {
+      console.error('Randevu oluşturulurken hata:', error);
+      alert('Randevu oluşturulamadı. Lütfen tekrar deneyin.');
+    }
   };
 
   useEffect(() => {
@@ -48,10 +74,16 @@ const Appointment = () => {
             keyExtractor={(item) => item}
             extraData={selectedServices}
           />
-          {/* <Text style={styles.instructionText}>Lütfen almak istediğiniz hizmet(ler)i seçiniz.</Text>
+          <Text style={styles.instructionText}>Lütfen almak istediğiniz hizmet(ler)i seçiniz.</Text>
+          <TextInput
+            style={styles.noteInput}
+            placeholder="Not"
+            value={note}
+            onChangeText={setNote}
+          />
           <TouchableOpacity style={styles.appointButton} onPress={handleAppoint}>
             <Text style={styles.buttonText}>Randevu oluştur</Text>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
         </>
       )}
     </View>
@@ -97,6 +129,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
+  loadingIndicator: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   instructionText: {
     textAlign: 'center',
     backgroundColor: colors.primary500,
@@ -105,10 +142,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 10,
   },
-  loadingIndicator: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  noteInput: {
+    borderWidth: 1,
+    borderColor: colors.primary500,
+    borderRadius: 10,
+    padding: 10,
+    margin: 10,
   },
 });
 
