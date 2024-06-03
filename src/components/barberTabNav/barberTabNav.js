@@ -28,7 +28,7 @@ const BarberTabNavigator = () => {
         inactiveTintColor: 'gray',
       }}
     >
-      <Tab.Screen name="Randevular" component={BarberMainScreen} options={{ tabBarLabel: 'Berber', headerShown:false  }} />
+      <Tab.Screen name="Randevularım" component={BarberMainScreen} options={{ tabBarLabel: 'Berber', headerShown:false  }} />
       <Tab.Screen name="Hesabım" component={AdminScreen} options={{ tabBarLabel: 'Hesabım',headerShown:false }}  />
     </Tab.Navigator>
   );
