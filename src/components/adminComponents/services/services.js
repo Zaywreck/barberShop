@@ -7,6 +7,7 @@ import { doc, setDoc } from 'firebase/firestore';
 const ServicesAdmin = () => {
     const { services, firestore } = useContext(AppContext);
     const [updatedServices, setUpdatedServices] = useState(services);
+    const [newService, setNewService] = useState({ name: '', price: '' });
     const [activeTab, setActiveTab] = useState('view');
 
     const updateServices = async (updatedData) => {
@@ -19,7 +20,6 @@ const ServicesAdmin = () => {
             throw new Error('Error updating services data: ' + error.message);
         }
     };
-    
 
     const handleUpdate = async () => {
         try {
@@ -47,6 +47,7 @@ const ServicesAdmin = () => {
             updatedData = {
                 ...updatedServices,
                 [key]: {
+                    ...updatedServices[key],
                     [field]: value,
                 },
             };
@@ -66,6 +67,26 @@ const ServicesAdmin = () => {
 
     const handleTabPress = (tab) => {
         setActiveTab(tab);
+    };
+
+    const handleAddService = () => {
+        if (newService.name && newService.price) {
+            const key = newService.name.toLowerCase().replace(/\s+/g, '_');
+            const newId = Object.keys(updatedServices).length + 1;
+            const updatedData = {
+                ...updatedServices,
+                [key]: {
+                    id: newId,
+                    name: newService.name,
+                    price: parseFloat(newService.price),
+                },
+            };
+            setUpdatedServices(updatedData);
+            setNewService({ name: '', price: '' });
+            setActiveTab('view');
+        } else {
+            Alert.alert('Error', 'Please enter valid service details.');
+        }
     };
 
     return (
@@ -98,7 +119,7 @@ const ServicesAdmin = () => {
                                 <Text>Price:</Text>
                                 <TextInput
                                     value={updatedServices[serviceKey]?.price?.toString() || ''}
-                                    onChangeText={(text) => handleInputChange(serviceKey, 'price', parseInt(text) || 0)}
+                                    onChangeText={(text) => handleInputChange(serviceKey, 'price', parseFloat(text) || 0)}
                                     keyboardType="numeric"
                                     style={styles.input}
                                     onBlur={handlePriceInputBlur}
@@ -108,9 +129,22 @@ const ServicesAdmin = () => {
                     </>
                 )}
                 {activeTab === 'add' && (
-                    // Add Service Form
-                    <View>
-                        <Text>Add Service Form</Text>
+                    <View style={styles.serviceItem}>
+                        <Text>Name:</Text>
+                        <TextInput
+                            value={newService.name}
+                            onChangeText={(text) => setNewService({ ...newService, name: text })}
+                            style={styles.input}
+                        />
+                        <Text>Price:</Text>
+                        <TextInput
+                            value={newService.price}
+                            onChangeText={(text) => setNewService({ ...newService, price: text })}
+                            keyboardType="numeric"
+                            style={styles.input}
+                            onBlur={handlePriceInputBlur}
+                        />
+                        <Button title="Add Service" onPress={handleAddService} />
                     </View>
                 )}
                 <Button title="Submit" onPress={handleUpdate} />

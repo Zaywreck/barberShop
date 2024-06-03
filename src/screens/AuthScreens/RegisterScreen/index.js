@@ -34,7 +34,6 @@ const RegisterScreen = ({ navigation }) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.welcomeText}>buraya bi logo kanka!</Text>
             <Text style={styles.welcomeText}>Randevu işlemini kolaylaştırmak için</Text>
             <Text style={styles.welcomeText}>Lütfen bilgilerinizi girin.</Text>
             <View style={styles.inputContainer}>

@@ -42,42 +42,31 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: colors.grey,
     },
-    infoContainer: {
-        marginTop: 20,
-        paddingHorizontal: 20,
+    section: {
+        marginBottom: 30,
+        paddingTop: 10,
     },
-    infoRow: {
+    sectionHeader: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: colors.primary500,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        backgroundColor: colors.primary100,
+    },
+    item: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 15,
+        padding: 15,
         borderBottomWidth: 1,
         borderBottomColor: colors.lightGrey,
+        paddingHorizontal: 20,
     },
     infoText: {
         fontSize: 16,
         color: colors.primary500,
         marginLeft: 10,
     },
-    section: {
-    marginBottom: 30,
-    paddingTop:10,
-  },
-  sectionHeader: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: colors.primary500,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    backgroundColor: colors.primary100,
-  },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.lightGrey,
-    paddingHorizontal: 20,
-  },
     logoutButton: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -94,4 +83,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default styles; 
+export default styles;

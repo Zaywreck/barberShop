@@ -1,17 +1,21 @@
-import { View, Text,  } from 'react-native';
-import React, { useState } from 'react';
+import { SafeAreaView } from 'react-native';
+import React, { useContext, useState } from 'react';
 import styles from './styles';
-import PickerWidget from '../../components/dates/pickerWidget';
 import Hours from '../../components/dates/hours';
-
+import CalendarComponents from '../../components/calendar/calendar';
+import AppContext from '../../context/AppContext';
 
 const BarberMainScreen = () => {
+    const { shopInfo } = useContext(AppContext);
+    const [selectedDate, setSelectedDate] = useState(new Date());
 
     return (
-        <View style={styles.container}>
-            <PickerWidget />
-            <Hours />
-        </View>
+        <SafeAreaView style={styles.container}>
+            <CalendarComponents selectedDate={selectedDate} onDateChange={setSelectedDate} />
+            {shopInfo && (
+                <Hours selectedDate={selectedDate} isBarber={true} />
+            )}
+        </SafeAreaView>
     );
 };
 

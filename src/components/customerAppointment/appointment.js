@@ -31,22 +31,26 @@ const Appointment = ({selectedDate,selectedHour }) => {
     try {
       const user = auth.currentUser;
       if (!user) throw new Error('Kullanıcı kimliği doğrulanmadı');
-
+  
       const userDocRef = doc(firestore, 'users', user.email);
       const userDoc = await getDoc(userDocRef);
       if (!userDoc.exists()) throw new Error('Kullanıcı belgesi bulunamadı');
-
+  
       const fullName = userDoc.data().fullName;
       const date = selectedDate.toISOString().split('T')[0]; // Format date as YYYY-MM-DD
-
+  
       const appointmentData = {
         fullName,
-        services: selectedServices,
+        services: selectedServices.map(serviceId => ({
+          id: serviceId,
+          name: services[serviceId].name, // Include the name variable
+          price: services[serviceId].price,
+        })),
         date,
         hour: selectedHour,
         note
       };
-
+  
       const appointmentRef = doc(firestore, 'appointments', date, 'appointments', user.uid);
       await setDoc(appointmentRef, appointmentData);
       alert('Randevu başarıyla oluşturuldu!');
@@ -55,6 +59,7 @@ const Appointment = ({selectedDate,selectedHour }) => {
       alert('Randevu oluşturulamadı. Lütfen tekrar deneyin.');
     }
   };
+  
 
   useEffect(() => {
     setTimeout(() => {

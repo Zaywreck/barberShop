@@ -9,7 +9,7 @@ const CalendarComponents = ({ onDateChange }) => {
     const handleDayPress = (day) => {
         const selectedDate = day.dateString;
         if (new Date(selectedDate) < new Date(new Date().toDateString())) {
-            alert('Geçmiş tarihler için randevu alamazsınız!');
+            alert('Geçmiş tarihler için işlem yapamazsınız!');
             return;
         }
         setSelected(selectedDate);

@@ -1,27 +1,34 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 import BarberInfo from '../../components/barberInfo/barberInfo';
-import colors from '../../constants/colors';
 import Appointment from '../../components/customerAppointment/appointment';
-import AdditionalInfo from '../../components/additionalInfo/additionalInfo';
+import MyAppointments from '../../components/myAppointments/myAppointments';
 import Reviews from '../../components/reviews/reviews';
 import styles from './styles';
+import Hours from '../../components/dates/hours';
 
-const CustomersBarberScreen = () => {
-    const [activeTab, setActiveTab] = useState('services');
-
+const CustomersBarberScreen = ({ currentCustomer }) => {
+    const [activeTab, setActiveTab] = useState('appointments');
+    const selectedDate = new Date();
     const renderContent = () => {
         switch (activeTab) {
-            case 'services':
-                return <Appointment />;
+            case 'appointments':
+                // return current day's appointments
+                return <Hours selectedDate={selectedDate} isBarber={false} />;
             case 'additionalInfo':
-                return <AdditionalInfo />;
+                return <MyAppointments currentCustomer={currentCustomer} />;
             case 'reviews':
                 return <Reviews />;
             default:
                 return <Appointment />;
         }
     };
+    useEffect(() => {
+        console.log("CustomersBarberScreen mounted");
+        return () => {
+            console.log("CustomersBarberScreen unmounted");
+        };
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -29,19 +36,19 @@ const CustomersBarberScreen = () => {
             <View style={styles.appointmentContainer}>
                 <View style={styles.tabBar}>
                     <TouchableOpacity
-                        style={[styles.tabItem, activeTab === 'services' && styles.activeTab, ]}
-                        onPress={() => setActiveTab('services')}>
-                        <Text style={styles.tabText}>Services</Text>
+                        style={[styles.tabItem, activeTab === 'appointments' && styles.activeTab]}
+                        onPress={() => setActiveTab('appointments')}>
+                        <Text style={styles.tabText}>Bugünkü Randevular</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={[styles.tabItem, activeTab === 'additionalInfo' && styles.activeTab]}
                         onPress={() => setActiveTab('additionalInfo')}>
-                        <Text style={styles.tabText}>Additional Info</Text>
+                        <Text style={styles.tabText}>Ek Bilgi</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={[styles.tabItem, activeTab === 'reviews' && styles.activeTab]}
                         onPress={() => setActiveTab('reviews')}>
-                        <Text style={styles.tabText}>Reviews</Text>
+                        <Text style={styles.tabText}>Değerlendirmeler</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.content}>{renderContent()}</View>
