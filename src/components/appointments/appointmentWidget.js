@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { deleteDoc, doc } from "firebase/firestore";
 import AppContext from '../../context/AppContext';
 
-const AppointmentWidget = ({ customerName, services, note, availableServices, appointmentId, date, hour, canCancel }) => {
+const AppointmentWidget = ({ customerName, services, note, availableServices, appointmentId, date, hour, barber, canCancel }) => {
   const [showServices, setShowServices] = useState(false);
   const { firestore } = React.useContext(AppContext);
 
@@ -53,6 +53,11 @@ const AppointmentWidget = ({ customerName, services, note, availableServices, ap
           {note && (
             <View style={styles.noteContainer}>
               <Text style={styles.noteText}>Müşteri Notu: {note}</Text>
+            </View>
+          )}
+          {barber && (
+            <View style={styles.barberContainer}>
+              <Text style={styles.barberText}>Berber: {barber}</Text>
             </View>
           )}
           {canCancel && (
@@ -111,6 +116,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   noteText: {
+    color: 'white',
+  },
+  barberContainer: {
+    marginTop: 10,
+  },
+  barberText: {
     color: 'white',
   },
   cancelButton: {

@@ -2,10 +2,10 @@ import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, Alert, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import AppContext from '../../../context/AppContext';
 import { Ionicons } from '@expo/vector-icons';
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, setDoc, doc } from "firebase/firestore";
 
 const BarberManagementScreen = () => {
-    const { createBarberAccount, deleteBarberAccount, updateBarberAccount, firestore } = useContext(AppContext);
+    const { createBarberAccount, deleteBarberAccount, updateBarberAccount, firestore, auth, shopInfo } = useContext(AppContext);
     const [barbers, setBarbers] = useState([]);
     const [newBarberEmail, setNewBarberEmail] = useState('');
     const [newBarberFullName, setNewBarberFullName] = useState('');
@@ -49,6 +49,20 @@ const BarberManagementScreen = () => {
             await fetchBarbers();
         } else {
             Alert.alert('Error', 'Please fill in both email and full name.');
+        }
+    };
+
+    const handleAddMyselfAsBarber = async () => {
+        const user = auth.currentUser;
+        if (user) {
+            await setDoc(doc(firestore, 'config', 'senanureren0058@gmail.com', 'barbers', user.uid), {
+                fullName: shopInfo.name || 'Dükkan Sahibi',
+                email: user.email,
+            });
+            await fetchBarbers();
+            Alert.alert('Success', 'You have been added as a barber.');
+        } else {
+            Alert.alert('Error', 'No authenticated user found.');
         }
     };
 
@@ -105,6 +119,7 @@ const BarberManagementScreen = () => {
                     <Text style={styles.refreshText}>Refresh</Text>
                 </TouchableOpacity>
             </View>
+            <Button title="Add Myself as a Barber" onPress={handleAddMyselfAsBarber} />
             {barbers.map(barber => (
                 <View key={barber.id} style={styles.barberItem}>
                     <Text>{barber.fullName} ({barber.email})</Text>

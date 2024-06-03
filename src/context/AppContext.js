@@ -1,8 +1,9 @@
 import { createContext, useEffect, useState } from "react";
 import { initializeApp } from "firebase/app";
-import { getFirestore, doc, getDoc, collection, setDoc, deleteDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, collection, setDoc, deleteDoc, getDocs } from "firebase/firestore";
 import firebaseConfig from "../../firebaseConfig";
-import { getAuth, signOut, createUserWithEmailAndPassword, deleteUser } from "firebase/auth";
+import { getAuth, signOut, createUserWithEmailAndPassword } from "firebase/auth";
+import { Alert } from "react-native";
 
 const AppContext = createContext();
 
@@ -11,6 +12,7 @@ export const AppProvider = ({ children }) => {
     const [services, setServices] = useState([]);
     const [location, setLocation] = useState(null);
     const [appointments, setAppointments] = useState([]);
+    const [barbers, setBarbers] = useState([]);
     const [user, setUser] = useState(null);
 
     // Initialize Firebase
@@ -44,6 +46,11 @@ export const AppProvider = ({ children }) => {
                 } else {
                     console.log('No location document!');
                 }
+
+                const barbersCollectionRef = collection(firestore, 'config', 'senanureren0058@gmail.com', 'barbers');
+                const barbersSnapshot = await getDocs(barbersCollectionRef);
+                const barbersList = barbersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setBarbers(barbersList);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -63,7 +70,7 @@ export const AppProvider = ({ children }) => {
         try {
             const dateStr = date.toISOString().split('T')[0];
             const appointmentsRef = collection(firestore, 'appointments', dateStr, 'appointments');
-            const appointmentsSnapshot = await getDoc(appointmentsRef);
+            const appointmentsSnapshot = await getDocs(appointmentsRef);
 
             const fetchedAppointments = [];
             appointmentsSnapshot.forEach(doc => {
@@ -73,6 +80,24 @@ export const AppProvider = ({ children }) => {
             setAppointments(fetchedAppointments);
         } catch (error) {
             console.error('Error fetching appointments:', error);
+        }
+    };
+
+    const fetchAppointmentsForDate = async (date) => {
+        try {
+            const dateStr = date.toISOString().split('T')[0];
+            const appointmentsRef = collection(firestore, 'appointments', dateStr, 'appointments');
+            const appointmentsSnapshot = await getDocs(appointmentsRef);
+
+            const fetchedAppointments = [];
+            appointmentsSnapshot.forEach(doc => {
+                fetchedAppointments.push(doc.data());
+            });
+
+            return fetchedAppointments;
+        } catch (error) {
+            console.error('Error fetching appointments for date:', error);
+            return [];
         }
     };
 
@@ -101,37 +126,30 @@ export const AppProvider = ({ children }) => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
-    
+
             await setDoc(doc(firestore, 'users', email), {
                 fullName: fullName,
                 role: 'barber',
             });
-    
+
             await setDoc(doc(firestore, 'config', 'senanureren0058@gmail.com', 'barbers', user.uid), {
                 fullName: fullName,
                 email: email,
             });
-    
+
             Alert.alert('Success', 'Barber added successfully');
         } catch (error) {
             console.error('Error adding barber:', error);
             Alert.alert('Error', 'Error adding barber');
         }
     };
-    
 
     const deleteBarberAccount = async (barberId, email) => {
         try {
-            // Delete from Firestore
-            await deleteDoc(doc(firestore, 'config', 'senanureren0058@gmail.com', 'barbers', barberId));
+            // Remove barber from Firestore
             await deleteDoc(doc(firestore, 'users', email));
+            await deleteDoc(doc(firestore, 'config', 'senanureren0058@gmail.com', 'barbers', barberId));
 
-            // Get user by email
-            const user = (await getAuth().getUserByEmail(email)).user;
-
-            // Delete from Firebase Auth
-            await deleteUser(user);
-            
             Alert.alert('Success', 'Barber deleted successfully');
         } catch (error) {
             console.error('Error deleting barber:', error);
@@ -141,14 +159,14 @@ export const AppProvider = ({ children }) => {
 
     const updateBarberAccount = async (barberId, email, fullName) => {
         try {
-            await setDoc(doc(firestore, 'config', 'senanureren0058@gmail.com', 'barbers', barberId), {
-                email: email,
-                fullName: fullName,
-            });
-
             await setDoc(doc(firestore, 'users', email), {
                 fullName: fullName,
                 role: 'barber',
+            });
+
+            await setDoc(doc(firestore, 'config', 'senanureren0058@gmail.com', 'barbers', barberId), {
+                fullName: fullName,
+                email: email,
             });
 
             Alert.alert('Success', 'Barber updated successfully');
@@ -172,7 +190,9 @@ export const AppProvider = ({ children }) => {
         services,
         location,
         appointments,
+        barbers,
         fetchAppointments,
+        fetchAppointmentsForDate,
         app,
         auth,
         firestore,
